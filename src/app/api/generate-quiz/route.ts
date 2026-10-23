@@ -88,11 +88,20 @@ export async function POST(req: NextRequest) {
     // Step 5: Store in Upstash Redis with 24-hour TTL (86400s)
     await setCachedQuiz(cacheKey, newQuiz, 86400);
 
+    const hasApiKey = Boolean(
+      process.env.GEMINI_API_KEY &&
+      process.env.GEMINI_API_KEY.trim() !== "" &&
+      process.env.GEMINI_API_KEY !== "your-gemini-api-key-here"
+    );
+
     return NextResponse.json({
       quiz: newQuiz,
       cached: false,
       cacheKey,
-      message: "Generated via Gemini AI & cached in Upstash Redis (24h TTL)",
+      hasApiKey,
+      message: hasApiKey
+        ? "Generated via Gemini AI & cached in Upstash Redis (24h TTL)"
+        : "GEMINI_API_KEY is not set in .env.local. Add your key to .env.local to enable live AI generation.",
     });
   } catch (error: unknown) {
     console.error("API /api/generate-quiz error:", error);

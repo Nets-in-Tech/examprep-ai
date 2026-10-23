@@ -64,6 +64,20 @@ export function GeneratorContainer() {
     setErrorMessage(null);
     setStatusMessage("Calculating SHA-256 fingerprint of input...");
 
+    if (mode === "notes" && (!notesContent || notesContent.trim().length < 15)) {
+      setErrorMessage("Please enter at least a few sentences of study notes, or click one of the 1-click sample presets below.");
+      setIsGenerating(false);
+      return;
+    }
+
+    if (mode === "url" && (!url || !url.trim().startsWith("http"))) {
+      setErrorMessage("Please enter a valid webpage URL starting with http:// or https://, or click one of the sample presets below.");
+      setIsGenerating(false);
+      return;
+    }
+
+    console.log("[ExamPrep AI] Generating quiz:", { mode, domain, questionCount, difficulty });
+
     try {
       // Step feedback animation
       setTimeout(() => {
@@ -81,7 +95,7 @@ export function GeneratorContainer() {
           mode,
           notesContent,
           url,
-          domain,
+          domain: mode === "domain" ? domain : (mode === "url" ? "Web Resource" : "Custom Notes"),
           questionCount,
           difficulty,
         }),

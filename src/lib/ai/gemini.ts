@@ -150,8 +150,10 @@ Requirements:
 
     const fullPrompt = `${systemContext}\n\nTask:\nGenerate the quiz JSON structure strictly adhering to the schema.\n\nInput Material:\n${promptSubject}`;
 
+    console.log(`[Gemini AI] Sending request to gemini-1.5-flash for mode: ${request.mode}, domain: ${request.domain || "N/A"}...`);
     const result = await model.generateContent(fullPrompt);
     const responseText = result.response.text();
+    console.log(`[Gemini AI] Received response (${responseText.length} chars). Parsing JSON...`);
     const parsedData = JSON.parse(responseText);
 
     const quiz: Quiz = {
@@ -191,38 +193,175 @@ Requirements:
 }
 
 function generateFallbackQuiz(request: GenerateQuizRequest, extractedContent?: string): Quiz {
-  const domainKey = (request.domain || "").toLowerCase();
+  if (request.mode === "domain") {
+    const domainKey = (request.domain || "").toLowerCase();
 
-  if (domainKey.includes("az-900") || domainKey.includes("azure")) {
+    if (domainKey.includes("az-900") || domainKey.includes("azure")) {
+      return {
+        ...FALLBACK_SAMPLE_QUIZZES["az-900"],
+        id: `fallback-${Date.now()}`,
+        difficulty: request.difficulty,
+      };
+    }
+
+    if (domainKey.includes("clf") || domainKey.includes("aws")) {
+      return {
+        ...FALLBACK_SAMPLE_QUIZZES["aws-clf-c02"],
+        id: `fallback-${Date.now()}`,
+        difficulty: request.difficulty,
+      };
+    }
+
+    if (domainKey.includes("sec") || domainKey.includes("sy0-701") || domainKey.includes("comptia")) {
+      return {
+        ...FALLBACK_SAMPLE_QUIZZES["sy0-701"],
+        id: `fallback-${Date.now()}`,
+        difficulty: request.difficulty,
+      };
+    }
+
+    if (domainKey.includes("ckad") || domainKey.includes("kubernetes") || domainKey.includes("k8s")) {
+      return {
+        ...FALLBACK_SAMPLE_QUIZZES["ckad"],
+        id: `fallback-${Date.now()}`,
+        difficulty: request.difficulty,
+      };
+    }
+
+    if (domainKey.includes("next") || domainKey.includes("web") || domainKey.includes("react")) {
+      return {
+        ...FALLBACK_SAMPLE_QUIZZES["next-dev"],
+        id: `fallback-${Date.now()}`,
+        difficulty: request.difficulty,
+      };
+    }
+  }
+
+  // Handle Notes Ingestion fallback dynamically using student's actual text
+  if (request.mode === "notes" && request.notesContent) {
+    const lines = request.notesContent
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[-*#\d.]+\s*/, "").trim())
+      .filter((l) => l.length > 25);
+
+    const titleLine =
+      request.notesContent
+        .split(/\r?\n/)
+        .find((l) => l.trim().length > 3)
+        ?.replace(/^#+\s*/, "")
+        .trim() || "Study Notes";
+
+    if (lines.length > 0) {
+      const questionsCount = Math.min(request.questionCount, Math.max(lines.length, 3));
+      const questions = lines.slice(0, questionsCount).map((statement, idx) => {
+        const preview = statement.length > 120 ? statement.slice(0, 120) + "..." : statement;
+        return {
+          id: `notes-q-${idx + 1}-${Date.now()}`,
+          order: idx + 1,
+          scenario: `Reference from your study material: "${preview}"`,
+          question: `Based on your submitted study material, which of the following is accurate?`,
+          topic: titleLine,
+          correctExplanation: `According to your study notes: "${statement}". This directly validates option A.`,
+          options: [
+            {
+              id: "A",
+              text: statement,
+              isCorrect: true,
+              explanation: `CORRECT: This statement is derived directly from your notes.`,
+            },
+            {
+              id: "B",
+              text: `This principle only applies under legacy architectures and is considered deprecated.`,
+              isCorrect: false,
+              explanation: `DISTRACTOR: Incorrect; your notes state this as an active, required concept.`,
+            },
+            {
+              id: "C",
+              text: `The opposite outcome is expected during standard operating workflows.`,
+              isCorrect: false,
+              explanation: `DISTRACTOR: Incorrect; this contradicts the core principle in your study material.`,
+            },
+            {
+              id: "D",
+              text: `This behavior must be avoided to prevent unrecoverable runtime failure.`,
+              isCorrect: false,
+              explanation: `DISTRACTOR: Incorrect; your material recommends this as a valid guideline.`,
+            },
+          ],
+        };
+      });
+
+      return {
+        id: `quiz-notes-${Date.now()}`,
+        title: `${titleLine} Practice Quiz`,
+        description: `Custom practice quiz synthesized directly from your study notes.`,
+        domain: titleLine,
+        mode: "notes",
+        difficulty: request.difficulty,
+        createdAt: new Date().toISOString(),
+        questions,
+      };
+    }
+  }
+
+  // Handle URL Ingestion fallback dynamically using scraped content
+  if (request.mode === "url" && extractedContent) {
+    const sentences = extractedContent
+      .split(/[.!?]\s+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 30 && s.length < 180);
+
+    const questionsCount = Math.min(request.questionCount, Math.max(sentences.length, 3));
+    const questions = sentences.slice(0, questionsCount).map((sentence, idx) => ({
+      id: `url-q-${idx + 1}-${Date.now()}`,
+      order: idx + 1,
+      scenario: `Document excerpt: "${sentence}."`,
+      question: `Which takeaway is accurately supported by the source document?`,
+      topic: "Web Resource",
+      correctExplanation: `The source document specifically states: "${sentence}."`,
+      options: [
+        {
+          id: "A",
+          text: sentence,
+          isCorrect: true,
+          explanation: `CORRECT: Directly corroborated by the ingested webpage content.`,
+        },
+        {
+          id: "B",
+          text: `This claim was refuted by external documentation.`,
+          isCorrect: false,
+          explanation: `DISTRACTOR: Contradicts the factual statement provided in the article.`,
+        },
+        {
+          id: "C",
+          text: `This condition only holds true for private on-premises legacy systems.`,
+          isCorrect: false,
+          explanation: `DISTRACTOR: Misrepresents the scope defined in the text.`,
+        },
+        {
+          id: "D",
+          text: `No reliable correlation was discovered between these mechanisms.`,
+          isCorrect: false,
+          explanation: `DISTRACTOR: False; a direct link is explicitly documented.`,
+        },
+      ],
+    }));
+
     return {
-      ...FALLBACK_SAMPLE_QUIZZES["az-900"],
-      id: `fallback-${Date.now()}`,
+      id: `quiz-url-${Date.now()}`,
+      title: `Web Resource Mastery Quiz`,
+      description: `Practice questions derived from the extracted web article.`,
+      domain: "Web Resource",
+      mode: "url",
       difficulty: request.difficulty,
+      createdAt: new Date().toISOString(),
+      sourceUrl: request.url,
+      questions,
     };
   }
 
-  if (domainKey.includes("clf") || domainKey.includes("aws")) {
-    return {
-      ...FALLBACK_SAMPLE_QUIZZES["aws-clf-c02"],
-      id: `fallback-${Date.now()}`,
-      difficulty: request.difficulty,
-    };
-  }
-
-  // Generic dynamic fallback created from the topic or notes
-  const topicName =
-    request.mode === "domain"
-      ? request.domain || "Cloud Architecture"
-      : request.mode === "url"
-      ? "Web Resource Insights"
-      : "Study Notes Mastery";
-
-  const previewSnippet = (
-    request.notesContent ||
-    extractedContent ||
-    `Core concepts in ${topicName}`
-  ).slice(0, 300);
-
+  // Generic dynamic fallback
+  const topicName = request.domain || "Cloud Architecture";
   return {
     id: `quiz-${Date.now()}`,
     title: `${topicName} Exam Practice`,
@@ -236,7 +375,7 @@ function generateFallbackQuiz(request: GenerateQuizRequest, extractedContent?: s
       {
         id: `q-1-${Date.now()}`,
         order: 1,
-        scenario: `Consider the principles of ${topicName} as highlighted in: "${previewSnippet.slice(0, 120)}..."`,
+        scenario: `Consider the fundamental principles of ${topicName}.`,
         question: `What represents the optimal design choice or core standard regarding ${topicName}?`,
         topic: topicName,
         correctExplanation:
