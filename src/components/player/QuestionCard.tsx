@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { QuizQuestion, QuizOption } from "@/types/quiz";
+import { QuizQuestion } from "@/types/quiz";
 import { useQuizStore } from "@/store/useQuizStore";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,10 +11,7 @@ import {
   BookOpen,
   Info,
   Lightbulb,
-  HelpCircle,
   Strikethrough,
-  ArrowRight,
-  Sparkles,
 } from "lucide-react";
 
 interface QuestionCardProps {
@@ -79,7 +76,7 @@ export function QuestionCard({ question, isEliminateMode }: QuestionCardProps) {
                 <span>Scenario / Case Context</span>
               </div>
               <p className="text-sm text-slate-200 leading-relaxed italic font-serif">
-                "{question.scenario}"
+                &ldquo;{question.scenario}&rdquo;
               </p>
             </div>
           )}

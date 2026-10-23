@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useQuizStore } from "@/store/useQuizStore";
-import { Cloud, Sparkles, X, ArrowRight } from "lucide-react";
+import { Cloud, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SaveProgressBannerProps {

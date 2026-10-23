@@ -5,15 +5,13 @@ import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuizStore } from "@/store/useQuizStore";
+import { Quiz } from "@/types/quiz";
 import {
-  Trophy,
   Clock,
   RotateCcw,
   Trash2,
-  CheckCircle,
   FileText,
   Calendar,
-  CloudCheck,
 } from "lucide-react";
 
 interface HistoryModalProps {
@@ -39,7 +37,7 @@ export function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
       : 0;
   const perfectRuns = guestAttempts.filter((a) => a.percentage === 100).length;
 
-  const handleRetake = (snapshot: any) => {
+  const handleRetake = (snapshot?: Quiz) => {
     if (snapshot) {
       startQuiz(snapshot, true);
       onClose();

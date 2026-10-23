@@ -6,7 +6,7 @@ import { PlayerHeader } from "./PlayerHeader";
 import { QuestionCard } from "./QuestionCard";
 import { QuestionGridModal } from "./QuestionGridModal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Flag } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export function QuizPlayerContainer() {
   const {

@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useQuizStore } from "@/store/useQuizStore";
-import { Cloud, Lock, Mail, Sparkles, CheckCircle, AlertCircle } from "lucide-react";
+import { Lock, Sparkles, CheckCircle, AlertCircle } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

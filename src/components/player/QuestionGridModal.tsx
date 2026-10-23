@@ -3,7 +3,7 @@
 import React from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useQuizStore } from "@/store/useQuizStore";
-import { Bookmark, Check, Circle } from "lucide-react";
+import { Bookmark } from "lucide-react";
 
 interface QuestionGridModalProps {
   isOpen: boolean;

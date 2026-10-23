@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { QuizAttempt } from "@/types/quiz";
 
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = getSupabaseServerClient();

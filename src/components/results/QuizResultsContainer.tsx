@@ -8,18 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExportModal } from "@/components/export/ExportModal";
 import {
-  Trophy,
-  Clock,
   RotateCcw,
   PlusCircle,
   Share2,
   CheckCircle,
   XCircle,
-  Bookmark,
   Lightbulb,
   Cloud,
   ArrowRight,
-  BookOpen,
 } from "lucide-react";
 
 interface QuizResultsContainerProps {
@@ -40,18 +36,18 @@ export function QuizResultsContainer({ onOpenAuth }: QuizResultsContainerProps) 
   const [activeFilter, setActiveFilter] = useState<"all" | "incorrect" | "bookmarked">("all");
   const [isExportOpen, setIsExportOpen] = useState(false);
 
-  if (!currentQuiz) return null;
-
-  const totalQuestions = currentQuiz.questions.length;
+  const totalQuestions = currentQuiz?.questions.length || 0;
   let correctCount = 0;
 
-  currentQuiz.questions.forEach((q) => {
-    if (userAnswers[q.id]?.isCorrect) {
-      correctCount++;
-    }
-  });
+  if (currentQuiz) {
+    currentQuiz.questions.forEach((q) => {
+      if (userAnswers[q.id]?.isCorrect) {
+        correctCount++;
+      }
+    });
+  }
 
-  const percentage = Math.round((correctCount / totalQuestions) * 100);
+  const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
   const isPassing = percentage >= 70;
 
   // Grade classification
@@ -77,7 +73,7 @@ export function QuizResultsContainer({ onOpenAuth }: QuizResultsContainerProps) 
     gradeFeedback = "Solid foundation, but requires targeted review.";
   }
 
-  // Trigger celebration confetti if passing
+  // Trigger celebration confetti if passing (hooks must be unconditional)
   useEffect(() => {
     if (percentage >= 70) {
       try {
@@ -87,11 +83,13 @@ export function QuizResultsContainer({ onOpenAuth }: QuizResultsContainerProps) 
           origin: { y: 0.6 },
           colors: ["#6366f1", "#10b981", "#f59e0b", "#8b5cf6"],
         });
-      } catch (e) {
+      } catch {
         // Safe fallback if canvas not available
       }
     }
   }, [percentage]);
+
+  if (!currentQuiz) return null;
 
   const incorrectQuestions = currentQuiz.questions.filter(
     (q) => !userAnswers[q.id] || !userAnswers[q.id].isCorrect
@@ -266,8 +264,6 @@ export function QuizResultsContainer({ onOpenAuth }: QuizResultsContainerProps) 
           {displayedQuestions.map((q) => {
             const answer = userAnswers[q.id];
             const isCorrect = answer?.isCorrect;
-            const correctOpt = q.options.find((opt) => opt.isCorrect);
-
             return (
               <Card
                 key={q.id}
@@ -306,7 +302,7 @@ export function QuizResultsContainer({ onOpenAuth }: QuizResultsContainerProps) 
 
                   {q.scenario && (
                     <div className="rounded-xl bg-slate-950/50 border border-slate-800/80 p-3.5 text-xs text-slate-300 italic">
-                      "{q.scenario}"
+                      &ldquo;{q.scenario}&rdquo;
                     </div>
                   )}
 

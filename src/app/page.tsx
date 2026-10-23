@@ -3,22 +3,18 @@
 import React, { useState } from "react";
 import { useQuizStore } from "@/store/useQuizStore";
 import { Navbar } from "@/components/layout/Navbar";
-import { SaveProgressBanner } from "@/components/layout/SaveProgressBanner";
 import { GeneratorContainer } from "@/components/generator/GeneratorContainer";
 import { QuizPlayerContainer } from "@/components/player/QuizPlayerContainer";
 import { QuizResultsContainer } from "@/components/results/QuizResultsContainer";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { HistoryModal } from "@/components/history/HistoryModal";
-import { Badge } from "@/components/ui/badge";
 import {
   Sparkles,
-  Zap,
   Sliders,
   BrainCircuit,
   ShieldCheck,
   CheckCircle,
   X,
-  FileCheck2,
 } from "lucide-react";
 
 export default function Home() {

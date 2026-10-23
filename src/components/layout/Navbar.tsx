@@ -3,15 +3,11 @@
 import React from "react";
 import { useQuizStore } from "@/store/useQuizStore";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   GraduationCap,
   History,
-  CloudCheck,
   User,
   LogOut,
-  Sparkles,
-  RotateCcw,
   PlusCircle,
 } from "lucide-react";
 

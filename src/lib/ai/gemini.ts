@@ -1,8 +1,8 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, ResponseSchema } from "@google/generative-ai";
 import { GenerateQuizRequest, Quiz, QuizQuestion } from "@/types/quiz";
 import { FALLBACK_SAMPLE_QUIZZES } from "./sampleQuizzes";
 
-const quizResponseSchema = {
+const quizResponseSchema: ResponseSchema = {
   type: SchemaType.OBJECT,
   properties: {
     title: {
@@ -103,7 +103,7 @@ export async function generateQuizWithGemini(
       model: "gemini-1.5-flash",
       generationConfig: {
         responseMimeType: "application/json",
-        responseSchema: quizResponseSchema as any,
+        responseSchema: quizResponseSchema,
         temperature: 0.25, // Lower temperature for factually precise questions
       },
     });
