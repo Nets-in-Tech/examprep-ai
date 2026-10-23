@@ -82,7 +82,6 @@ Configure your credentials:
 # 1. Supabase (https://supabase.com/dashboard)
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # 2. Google Gemini API (https://aistudio.google.com/app/apikey)
 GEMINI_API_KEY=your-gemini-api-key
