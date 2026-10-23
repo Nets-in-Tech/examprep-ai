@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Sparkles,
   Zap,
-  Database,
+  Sliders,
   BrainCircuit,
   ShieldCheck,
   CheckCircle,
@@ -29,8 +29,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
-      {/* Guest Progress Top Banner */}
-      <SaveProgressBanner onOpenAuth={() => setIsAuthOpen(true)} />
 
       {/* Main Navigation */}
       <Navbar
@@ -46,7 +44,7 @@ export default function Home() {
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-3.5 py-1 text-xs font-semibold text-indigo-400 border border-indigo-500/20 shadow-inner">
                 <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                <span>Next-Gen Psychometric Exam Engine</span>
+                <span>Next-Gen Psychometric</span>
               </div>
 
               <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight sm:leading-tight">
@@ -81,12 +79,12 @@ export default function Home() {
 
               <div className="rounded-2xl bg-slate-900/40 border border-slate-800/80 p-5 space-y-2.5">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-                  <Database className="h-5 w-5" />
+                  <Sliders className="h-5 w-5" />
                 </div>
-                <h3 className="font-bold text-white text-base">Upstash Redis Caching</h3>
+                <h3 className="font-bold text-white text-base">Flexible</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Deterministic SHA-256 hashing caches quizzes for 24 hours. Repeat requests return
-                  with zero latency and zero external API consumption.
+                  Exams with difficulty of your own chosen level, explanatory, and shows results as marked.
+                  can store history if the user has an account, which enables to see there last exam history
                 </p>
               </div>
 
@@ -94,7 +92,7 @@ export default function Home() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
-                <h3 className="font-bold text-white text-base">Guest-First Architecture</h3>
+                <h3 className="font-bold text-white text-base">Reliable</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Start practicing instantly with zero friction. Quizzes and scores persist locally
                   and sync automatically to Supabase when you decide to sign up.
@@ -117,16 +115,12 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <span className="font-bold text-white">ExamPrep AI</span>
             <span>—</span>
-            <span>High-Yield Practice Engine</span>
+            <span>High-Yield Practice Ai made exams</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400">
-            <span>Next.js 16</span>
+            <span>unofficial student made tool</span>
             <span>•</span>
-            <span>Supabase</span>
-            <span>•</span>
-            <span>Gemini AI</span>
-            <span>•</span>
-            <span>Upstash Redis</span>
+            <span>@2026</span>
           </div>
         </div>
       </footer>

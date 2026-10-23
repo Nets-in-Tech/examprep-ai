@@ -52,9 +52,6 @@ export function Navbar({ onOpenAuth, onOpenHistory }: NavbarProps) {
               <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
                 ExamPrep<span className="text-indigo-400">AI</span>
               </span>
-              <span className="hidden sm:inline-flex rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-400 border border-indigo-500/20">
-                PRO
-              </span>
             </div>
             <p className="text-[11px] text-slate-400 hidden sm:block -mt-0.5">
               Smart Quiz Builder with Deep Explanations
